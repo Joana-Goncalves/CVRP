@@ -1,6 +1,5 @@
 import random
 
-
 def pmx_xo(parent1, parent2):
     """
     Perform partially mapped crossover on parents' first list (customers).
@@ -91,47 +90,36 @@ def two_point_xo(parent1, parent2):
     p1[cxpoint1:cxpoint2], p2[cxpoint1:cxpoint2] = p2[cxpoint1:cxpoint2], p1[cxpoint1:cxpoint2]
 
 
-def swap_genes(parent1, parent2):
+def single_point_xo(parent1, parent2):
     """
-    Swap genes between the second lists (vehicles) of two parents.
-    This function does not perform a traditional crossover; it only swaps genes within the vehicles lists.
+    Executes a single-point crossover on the second list (vehicles) of the input individuals.
+    The two individuals are modified in place and both keep their original length.
     Args:
-        parent1 (list): The first parent, a list containing two sublists.
-        parent2 (list): The second parent, a list containing two sublists.
+        parent1 (list): The first individual participating in the crossover. Each individual is a list of two nested lists: [[clients], [vehicles]]
+        parent2 (list): The second individual participating in the crossover.
     """
-    # Extract the vehicles lists
+    # Extract the vehicle lists from the individuals
     p1 = parent1[1]
     p2 = parent2[1]
-    num_clients = len(p1)
-    # Generate two random cut points within the range of the vehicles list
-    cut1 = random.randrange(num_clients + 1)
-    cut2 = random.randrange(num_clients + 1)
-    # Ensure cut1 is less than or equal to cut2
-    if cut1 > cut2:
-        cut1, cut2 = cut2, cut1
-    # Perform the gene swap between the two cut points
-    tmp = p1[cut1:cut2]        
-    p1[cut1:cut2] = p2[cut1:cut2]  
-    p2[cut1:cut2] = tmp 
-
+    size = len(p1)
+    # Select a single crossover point
+    cxpoint = random.randint(1, size - 1)
+    # Perform the single-point crossover on the vehicle lists
+    p1[cxpoint:], p2[cxpoint:] = p2[cxpoint:], p1[cxpoint:]
 
 # Combinations of crossover
-
 def xo_1(parent1, parent2):
     pmx_xo(parent1, parent2)
     two_point_xo(parent1, parent2)
 
-
 def xo_2(parent1, parent2):
     pmx_xo(parent1, parent2)
-    swap_genes(parent1, parent2)
-
+    single_point_xo(parent1, parent2)
 
 def xo_3(parent1, parent2):
     cycle_xo(parent1, parent2)
     two_point_xo(parent1, parent2)
 
-
 def xo_4(parent1, parent2):
     cycle_xo(parent1, parent2)
-    swap_genes(parent1, parent2)
+    single_point_xo(parent1, parent2)
